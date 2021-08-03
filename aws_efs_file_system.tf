@@ -1,5 +1,16 @@
 locals {
-  dns_name               = "${join("", aws_efs_file_system.default.*.id)}.efs.${var.region}.amazonaws.com"
+  dns_name = "${join("", aws_efs_file_system.default.*.id)}.efs.${var.region}.amazonaws.com"
+
+  security_group_rules = var.security_group_rules != null ? {
+    for indx, rule in flatten(var.security_group_rules) :
+    format("%v-%v-%v-%v-%s",
+      rule.type,
+      rule.protocol,
+      rule.from_port,
+      rule.to_port,
+      try(rule["description"], null) == null ? md5(format("Managed by Terraform #%d", indx)) : md5(rule.description)
+    ) => rule
+  } : {}
 }
 
 resource "aws_efs_file_system" "default" {
@@ -54,19 +65,4 @@ resource "aws_efs_access_point" "default" {
   }
 
   tags = local.tags
-}
-
-resource "aws_security_group" "efs_sg" {
-  count = var.enabled ? 1 : 0
-
-  name        = "${local.name}-efs"
-  description = "SG for EFS"
-  vpc_id      = data.aws_vpc.selected.id
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = join("-",[local.name,"lb"])
-    },
-  )
 }

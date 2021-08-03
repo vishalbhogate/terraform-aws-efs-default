@@ -107,3 +107,39 @@ variable "hosted_zone_is_internal" {
   default     = "false"
   description = "Set true in case the hosted zone is in an internal VPC, otherwise false"
 }
+
+variable "cluster_instance" {
+  description = "Provide intance name of the cluster"
+}
+
+variable "network_instance" {
+  description = "Network Number"
+}
+
+variable "environment" {
+  description = "prefix of environment module will be deployed to (poc, dev, sit, uat, stg, prd, shared)"
+}
+
+variable "account_name" {
+  description = "Tag value Account Name"
+}
+
+variable "project_code" {
+  description = "Tag value Project Code"
+}
+
+variable "project_name" {
+  description = "Tag value Project Name"
+}
+
+variable "project_owner" {
+  description = "Project Owner for tags"
+}
+
+variable "creator" {
+  description = "Resources Creator for tags"
+}
+
+variable "program_name" {
+  description = "Tag value Program name"
+}
